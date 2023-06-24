@@ -12,7 +12,7 @@ tidf = pickle.load(open('tfidf_vectorizer.pkl','rb'))
 @app.route('/')
 
 def home():
-    return "Main Function"
+    return render_template('home.html')
 
 
 @app.route('/predict_api', methods=['POST'])
@@ -23,6 +23,16 @@ def predict_api():
     trans_data = tidf.transform(data)
     output=classifier_model.predict(trans_data)
     return (output[0])
+
+@app.route('/predict', methods=['POST'])
+
+def predict():
+    data= list(request.form.values())
+    print(data)
+    trans_data = tidf.transform(data)
+    output=classifier_model.predict(trans_data)[0]
+    return render_template('home.html',prediction_text = 'The news is {}'.format(output))
+
 
 if __name__ =='__main__':
 	app.run(debug=True)
